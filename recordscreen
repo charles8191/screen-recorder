@@ -1,0 +1,20 @@
+#!/bin/bash
+while :; do
+yad --title="Screen Recorder" --button="Start" --button="Stop" --borders=30
+value=$?
+case $value in
+0)
+	ffmpeg -video_size 1920x1080 -framerate 60 -f x11grab -i :0.0 -preset ultrafast ~/Videos/output-$(date +%s%N | cut -b1-13).mkv -y &
+	pid=$!
+;;
+1)
+	if [[ ! -z "$pid" ]]; then
+		kill -2 $pid
+	fi
+;;
+252)
+	kill=1
+	break
+;;
+esac
+done
